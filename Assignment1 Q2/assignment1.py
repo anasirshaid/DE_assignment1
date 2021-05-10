@@ -24,21 +24,13 @@ def Create_dummy_Data():
 
 ###################################### Load the Data created Data set to postgres ##################
 def postgres_dataload():
-    try:
-        connection = psycopg2.connect(user = "airflow",
-        password = "airflow",
-        host = "172.18.0.2",
-        port = "5432",
-        database = "postgres")
-        cursor = connection.cursor()
-    except:
-        connection = psycopg2.connect(user = "airflow",
-        password = "airflow",
-        host = "172.18.0.3",
-        port = "5432",
-        database = "postgres")
-        cursor = connection.cursor()
-
+    connection = psycopg2.connect(user = "airflow",
+    password = "airflow",
+    host = "postgres",
+    port = "5432",
+    database = "postgres")
+    cursor = connection.cursor()
+   
     creat_table_query = '''CREATE TABLE IF NOT EXISTS datasetassign1
     (name TEXT NOT NULL,
     age TEXT NOT NULL,
@@ -58,21 +50,12 @@ def postgres_dataload():
 
 ############################### Export file from postgresql ###########################################
 def export_csv_frompostgresql(): 
-    try:
-        connection = psycopg2.connect(user = "airflow",
-        password = "airflow",
-        host = "172.18.0.3",
-        port = "5432",
-        database = "postgres")
-        cursor = connection.cursor()
-    
-    except:
-        connection = psycopg2.connect(user = "airflow",
-        password = "airflow",
-        host = "172.18.0.2",
-        port = "5432",
-        database = "postgres")
-        cursor = connection.cursor()       
+    connection = psycopg2.connect(user = "airflow",
+    password = "airflow",
+    host = "postgres",
+    port = "5432",
+    database = "postgres")
+    cursor = connection.cursor()    
 
     sql = "COPY (SELECT * FROM datasetassign1) TO STDOUT WITH CSV DELIMITER ','"
     with open('/opt/airflow/logs/Exported_data.csv', 'w') as fexport:
@@ -88,7 +71,7 @@ def CSV_to_JSON():
 ######################################### load Json to MongoDB ######################################
 import pymongo
 def JSONtoMONGODB ():
-    mng_client = pymongo.MongoClient(host = "172.18.0.5",
+    mng_client = pymongo.MongoClient(host = "mongo",
                                     port= 27017,
                                     username = "root", 
                                     password = "DECourse")
@@ -103,7 +86,7 @@ def JSONtoMONGODB ():
     db_cm.remove()
     db_cm.insert(file_data)
     mng_client.close()
-    
+
 ######################################### Pipe-Line DAG's ###########################################
 my_dag = DAG(
     dag_id = 'assignment1',
